@@ -37,6 +37,7 @@ public class Main {
                 }
             }catch (InputMismatchException e){
                 System.out.println("Invalid input.");
+                input.next();//clean buffer
             }catch (Exception e){
                 System.out.println(e.getMessage());
             }
@@ -61,6 +62,7 @@ public class Main {
                         }
                     }catch (InputMismatchException e) {
                         System.out.println("Invalid input.");
+                        input.next();//clean buffer
                     }catch (Exception e){
                         System.out.println(e.getMessage());
                     }
