@@ -8,6 +8,7 @@ public class Main {
 
 
         char[][] ticTacToe = {{'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'}};
+        String[] results = {"-", "-", "-"};
 
 
         System.out.print("Please enter your name: " );
@@ -28,7 +29,7 @@ public class Main {
 
             while (true){ //loop for one round
 
-//                ---------------USER TURN-----------------
+                //---------------USER TURN-----------------
                 while (true){ //loop for one user turn
                     System.out.println("\n------" + name.toUpperCase() + "'s TURN------");
                     System.out.print("Please choose position: ");
@@ -45,8 +46,9 @@ public class Main {
                 }
 
                 if(checkWinner(ticTacToe, 'X')){
-                    userWinsCount++;
                     System.out.println("\nCONGRATS, YOU WON THIS ROUND.");
+                    userWinsCount++;
+                    results[i] = name;
                     break;
                 }
 
@@ -55,7 +57,7 @@ public class Main {
                     break;
                 }
 
-//                ---------------COMPUTER TURN-----------------
+                //---------------COMPUTER TURN-----------------
                 while (true){ //loop for one computer turn
                     System.out.println("\n------COMPUTER'S TURN------");
                     int computerPosition = random.nextInt(1, 10);
@@ -72,8 +74,9 @@ public class Main {
                 }
 
                 if(checkWinner(ticTacToe, 'O')){
-                    computerWinsCount++;
                     System.out.println("\nGAME OVER, YOU LOST THIS ROUND.");
+                    computerWinsCount++;
+                    results[i] = "Computer";
                     break;
                 }
 
@@ -93,8 +96,9 @@ public class Main {
             resetBoard(ticTacToe);
         }
 
-        if(rounds == 3){
-            displayResults(computerWinsCount, userWinsCount);
+        //no need to print the results table if it's only one round
+        if(rounds == 2){
+            displayResults(computerWinsCount, userWinsCount, results);
         }
 
     }
@@ -111,8 +115,14 @@ public class Main {
         }
     }
 
-    static void displayResults(int computerWinsCount, int userWinsCount){
-        System.out.println("\n=== FINAL RESULTS ===");
+    static void displayResults(int computerWinsCount, int userWinsCount, String[] results){
+        System.out.println("\n===== FINAL RESULTS =====");
+        System.out.println("  ROUND  |  WINNER");
+        System.out.println("--------------------");
+        for(int i = 0; i < 3; i++){
+            System.out.println("    " + (i+1) + "    |  " + results[i]);
+        }
+
         if(userWinsCount > computerWinsCount){
             System.out.println("YOU ARE THE CHAMPION!");
         } else if(computerWinsCount > userWinsCount){
@@ -126,11 +136,11 @@ public class Main {
         System.out.println("         -----------------------");
     }
 
-    static void resetBoard(char[][] board){
+    static void resetBoard(char[][] ticTacToe){
         char c = '1';
         for(int i = 0; i < 3; i++){
             for(int j = 0; j < 3; j++){
-                board[i][j] = c++;
+                ticTacToe[i][j] = c++;
             }
         }
     }
