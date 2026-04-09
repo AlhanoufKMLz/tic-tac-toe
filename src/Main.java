@@ -24,9 +24,11 @@ public class Main {
                     System.out.print("Please choose position: ");
                     int userPosition = input.nextInt();
                     try{
-                        turn(ticTacToe, 'X', userPosition);
-                        displayGameBoard(ticTacToe);
-                        break;
+                        boolean isDone = turn(ticTacToe, 'X', userPosition);
+                        if(isDone){
+                            displayGameBoard(ticTacToe);
+                            break;
+                        }
                     }catch (Exception e){
                         System.out.println(e.getMessage());
                     }
@@ -37,12 +39,15 @@ public class Main {
                 }
 
                 while (true){ //loop for one computer turn
-                    int computerPosition = random.nextInt(1, 10);
                     System.out.println("\n------COMPUTER TURN------");
+                    int computerPosition = random.nextInt(1, 10);
                     try{
-                        turn(ticTacToe, '0', computerPosition);
-                        displayGameBoard(ticTacToe);
-                        break;
+                        boolean isDone = turn(ticTacToe, 'O', computerPosition);
+                        if(isDone){
+                            displayGameBoard(ticTacToe);
+                            break;
+                        }
+
                     }catch (Exception e){
                         System.out.println(e.getMessage());
                     }
@@ -129,16 +134,17 @@ public class Main {
 
     static boolean checkPosition(char position) throws Exception{
         if(position == '?') throw new Exception("Invalid position.");
-        if(position == '-') return true;
-        return true;
+        if(position != 'X' && position != 'O') return true;
+        return false;
     }
 
-    static void turn(char[][] ticTacToe, char player, int position) throws Exception{
+    static boolean turn(char[][] ticTacToe, char player, int position) throws Exception{
         boolean isAvailable = checkPosition(getPosition(position, ticTacToe)); //getting what's inside the position ane checking if it's not used yet.
         if(isAvailable){
             fillPosition(position,player, ticTacToe);
+            return true;
         }
-
+        return false;
     }
 
     static boolean checkWinner(char[][] ticTacToe, char player){
