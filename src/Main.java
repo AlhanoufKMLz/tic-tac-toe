@@ -9,18 +9,28 @@ public class Main {
 
         char[][] ticTacToe = {{'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'}};
 
-        System.out.print("How many rounds do you want? ");
+
+        System.out.print("Please enter your name: " );
+        String name = input.nextLine();
+
+        printGreeting(name);
+
+        System.out.println("Please choose one: \n1- Play onle ONE round. \n2- Play 3 rounds.");
         int rounds = input.nextInt();
+
+        int computerWinsCount = 0;
+        int userWinsCount = 0;
 
         //Game starts
         for(int i = 0; i < rounds; i++){ //loop for rounds
-            System.out.println("---------------Round #" + (i+1) + "---------------\n");
+            System.out.println("\n---------------ROUND #" + (i+1) + "---------------\n");
             displayGameBoard(ticTacToe);
 
             while (true){ //loop for one round
 
+//                ---------------USER TURN-----------------
                 while (true){ //loop for one user turn
-                    System.out.println("\n------YOUR TURN------");
+                    System.out.println("\n------" + name.toUpperCase() + "'s TURN------");
                     System.out.print("Please choose position: ");
                     int userPosition = input.nextInt();
                     try{
@@ -33,13 +43,21 @@ public class Main {
                         System.out.println(e.getMessage());
                     }
                 }
+
                 if(checkWinner(ticTacToe, 'X')){
-                    System.out.println("Congrats, you win this round!!!");
+                    userWinsCount++;
+                    System.out.println("\nCONGRATS, YOU WON THIS ROUND.");
                     break;
                 }
 
+                if(checkForTie(ticTacToe)){
+                    System.out.println("DRAW.");
+                    break;
+                }
+
+//                ---------------COMPUTER TURN-----------------
                 while (true){ //loop for one computer turn
-                    System.out.println("\n------COMPUTER TURN------");
+                    System.out.println("\n------COMPUTER'S TURN------");
                     int computerPosition = random.nextInt(1, 10);
                     try{
                         boolean isDone = turn(ticTacToe, 'O', computerPosition);
@@ -52,15 +70,32 @@ public class Main {
                         System.out.println(e.getMessage());
                     }
                 }
+
                 if(checkWinner(ticTacToe, 'O')){
-                    System.out.println("Game over.");
+                    computerWinsCount++;
+                    System.out.println("\nGAME OVER, YOU LOST THIS ROUND.");
+                    break;
+                }
+
+                if(checkForTie(ticTacToe)){
+                    System.out.println("DRAW.");
                     break;
                 }
 
             }
+
+            //if someone won two rounds no need for the third round
+            if(computerWinsCount == 2 || userWinsCount == 2){
+                break;
+            }
+
+            //reset the array after each round
+            resetBoard(ticTacToe);
         }
 
-
+        if(rounds == 3){
+            displayResults(computerWinsCount, userWinsCount);
+        }
 
     }
 
@@ -73,6 +108,30 @@ public class Main {
                 System.out.print(ticTacToe[i][j] + "  |  ");
             }
             System.out.println("\n  -------------------");
+        }
+    }
+
+    static void displayResults(int computerWinsCount, int userWinsCount){
+        System.out.println("\n=== FINAL RESULTS ===");
+        if(userWinsCount > computerWinsCount){
+            System.out.println("YOU ARE THE CHAMPION!");
+        } else if(computerWinsCount > userWinsCount){
+            System.out.println("Computer wins overall.");
+        }
+    }
+
+    static void printGreeting(String name){
+        System.out.println("         -----------------------");
+        System.out.println("Hi " + name + ", Welcome to TIC TAC TOE game.");
+        System.out.println("         -----------------------");
+    }
+
+    static void resetBoard(char[][] board){
+        char c = '1';
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                board[i][j] = c++;
+            }
         }
     }
 
@@ -134,8 +193,7 @@ public class Main {
 
     static boolean checkPosition(char position) throws Exception{
         if(position == '?') throw new Exception("Invalid position.");
-        if(position != 'X' && position != 'O') return true;
-        return false;
+        return position != 'X' && position != 'O';
     }
 
     static boolean turn(char[][] ticTacToe, char player, int position) throws Exception{
@@ -150,13 +208,22 @@ public class Main {
     static boolean checkWinner(char[][] ticTacToe, char player){
         for(int i = 0; i < 3; i++){
             if(ticTacToe[i][0] == player && ticTacToe[i][1] == player && ticTacToe[i][2] == player) return true;
-        }
-        for(int i = 0; i < 3; i++){
             if(ticTacToe[0][i] == player && ticTacToe[1][i] == player && ticTacToe[2][i] == player) return true;
         }
         if(ticTacToe[0][0] == player && ticTacToe[1][1] == player && ticTacToe[2][2] == player) return true;
         if(ticTacToe[0][2] == player && ticTacToe[1][1] == player && ticTacToe[2][0] == player) return true;
 
         return false;
+    }
+
+    static boolean checkForTie(char[][] ticTacToe){
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                if(ticTacToe[i][j] != 'X' && ticTacToe[i][j] != 'O'){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
