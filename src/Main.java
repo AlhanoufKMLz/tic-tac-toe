@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -8,7 +9,7 @@ public class Main {
 
 
         char[][] ticTacToe = {{'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'}};
-        String[] results = {"-", "-", "-"};
+        String[] results = new String[3];
 
 
         System.out.print("Please enter your name: " );
@@ -16,11 +17,30 @@ public class Main {
 
         printGreeting(name);
 
-        System.out.println("Please choose one: \n1- Play onle ONE round. \n2- Play 3 rounds.");
-        int rounds = input.nextInt();
-
+        int rounds = 0;
         int computerWinsCount = 0;
         int userWinsCount = 0;
+
+        //loop until the user enters 1 or 2
+        while (true){
+            System.out.println("Please choose one: \n1- Play onle ONE round. \n2- Play 3 rounds.");
+            try{
+                int userChoice = input.nextInt();
+                if(userChoice == 1){
+                    rounds = 1;
+                    break;
+                } else if(userChoice == 2){
+                    rounds = 3;
+                    break;
+                } else{
+                    throw new Exception("Invalid input, Please enter \"1\" or \"2\".");
+                }
+            }catch (InputMismatchException e){
+                System.out.println("Invalid input.");
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
 
         //Game starts
         for(int i = 0; i < rounds; i++){ //loop for rounds
@@ -28,18 +48,19 @@ public class Main {
             displayGameBoard(ticTacToe);
 
             while (true){ //loop for one round
-
                 //---------------USER TURN-----------------
                 while (true){ //loop for one user turn
                     System.out.println("\n------" + name.toUpperCase() + "'s TURN------");
                     System.out.print("Please choose position: ");
-                    int userPosition = input.nextInt();
                     try{
+                        int userPosition = input.nextInt();
                         boolean isDone = turn(ticTacToe, 'X', userPosition);
                         if(isDone){
                             displayGameBoard(ticTacToe);
                             break;
                         }
+                    }catch (InputMismatchException e) {
+                        System.out.println("Invalid input.");
                     }catch (Exception e){
                         System.out.println(e.getMessage());
                     }
@@ -54,6 +75,7 @@ public class Main {
 
                 if(checkForTie(ticTacToe)){
                     System.out.println("DRAW.");
+                    results[i] = "Draw";
                     break;
                 }
 
@@ -82,6 +104,7 @@ public class Main {
 
                 if(checkForTie(ticTacToe)){
                     System.out.println("DRAW.");
+                    results[i] = "Draw";
                     break;
                 }
 
@@ -97,7 +120,7 @@ public class Main {
         }
 
         //no need to print the results table if it's only one round
-        if(rounds == 2){
+        if(rounds == 3){
             displayResults(computerWinsCount, userWinsCount, results);
         }
 
@@ -120,7 +143,7 @@ public class Main {
         System.out.println("  ROUND  |  WINNER");
         System.out.println("--------------------");
         for(int i = 0; i < 3; i++){
-            System.out.println("    " + (i+1) + "    |  " + results[i]);
+            System.out.println("    " + (i+1) + "    |  " + (results[i] == null ? "canceled!" : results[i]));
         }
 
         if(userWinsCount > computerWinsCount){
@@ -212,6 +235,7 @@ public class Main {
             fillPosition(position,player, ticTacToe);
             return true;
         }
+        System.out.println("This position is full, Please choose another one.");
         return false;
     }
 
