@@ -32,8 +32,7 @@ public class Main {
                 if(userChoice == 1){ //one player mode
                     System.out.print("Please enter your name: " );
                     input.nextLine();
-                    playerName = input.nextLine();
-                    player1Name = playerName;
+                    player1Name = input.nextLine();
                     numberPlayers = 1;
                     break;
                 } else if(userChoice == 2){ //two players mode
@@ -54,6 +53,7 @@ public class Main {
                 System.out.println(e.getMessage());
             }
         }
+        playerName = player1Name;
 
         //loop until the user enters 1 or 2
         while (true){
@@ -200,7 +200,7 @@ public class Main {
 
         //no need to print the results table if it's only one round
         if(rounds == 3){
-            displayResults(player1WinsCount, player2WinsCount, results);
+            displayResults(player1WinsCount, player2WinsCount, results, player1Name ,player2Name);
         }
 
     }
@@ -217,12 +217,18 @@ public class Main {
         }
     }
 
-    static void displayResults(int player1WinsCount, int player2WinsCount, String[] results){
+    static void displayResults(int player1WinsCount, int player2WinsCount, String[] results, String player1Name, String player2Name){
         System.out.println("\n===== FINAL RESULTS =====");
-        System.out.println("  ROUND  |  WINNER");
-        System.out.println("--------------------");
+        System.out.println("    ROUND  |  WINNER");
+        System.out.println("  --------------------");
         for(int i = 0; i < 3; i++){
-            System.out.println("    " + (i+1) + "    |  " + (results[i] == null ? "canceled!" : results[i]));
+            System.out.println("      " + (i+1) + "    |  " + (results[i] == null ? "canceled!" : results[i]));
+        }
+
+        if(player1WinsCount > player2WinsCount){
+            System.out.println("\n" + player1Name.toUpperCase() + " IS THE CHAMPION!");
+        } else if(player2WinsCount > player1WinsCount){
+            System.out.println("\n" + player2Name.toUpperCase() + " IS THE CHAMPION!");
         }
     }
 
