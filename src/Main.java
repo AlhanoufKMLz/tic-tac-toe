@@ -18,8 +18,11 @@ public class Main {
         printGreeting(name);
 
         int rounds = 0;
+        char userSympol = 'X';
+        char computerSympol = 'O';
         int computerWinsCount = 0;
         int userWinsCount = 0;
+
 
         //loop until the user enters 1 or 2
         while (true){
@@ -28,9 +31,11 @@ public class Main {
                 int userChoice = input.nextInt();
                 if(userChoice == 1){
                     rounds = 1;
+                    input.nextLine();
                     break;
                 } else if(userChoice == 2){
                     rounds = 3;
+                    input.nextLine();
                     break;
                 } else{
                     throw new Exception("Invalid input, Please enter \"1\" or \"2\".");
@@ -38,6 +43,27 @@ public class Main {
             }catch (InputMismatchException e){
                 System.out.println("Invalid input.");
                 input.next();//clean buffer
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+
+        //loop until the user enters X or O
+        while (true){
+            System.out.print("Please choose sympol to play with ( X or O ): ");
+            try{
+                String userInput = input.nextLine();
+                if(userInput.trim().equalsIgnoreCase("X")){
+                    break;
+                } else if(userInput.trim().equalsIgnoreCase("O")){
+                    userSympol = '0';
+                    computerSympol = 'X';
+                    break;
+                } else{
+                    throw new Exception("Invalid input, Please enter \"X\" or \"O\".");
+                }
+            }catch (InputMismatchException e){
+                System.out.println("Invalid input.");
             }catch (Exception e){
                 System.out.println(e.getMessage());
             }
@@ -55,7 +81,7 @@ public class Main {
                     System.out.print("Please choose position: ");
                     try{
                         int userPosition = input.nextInt();
-                        boolean isDone = turn(ticTacToe, 'X', userPosition);
+                        boolean isDone = turn(ticTacToe, userSympol, userPosition);
                         if(isDone){
                             displayGameBoard(ticTacToe);
                             break;
@@ -68,7 +94,7 @@ public class Main {
                     }
                 }
 
-                if(checkWinner(ticTacToe, 'X')){
+                if(checkWinner(ticTacToe, userSympol)){
                     System.out.println("\nCONGRATS, YOU WON THIS ROUND.");
                     userWinsCount++;
                     results[i] = name;
@@ -87,7 +113,7 @@ public class Main {
                     System.out.println("\n------COMPUTER'S TURN------");
                     int computerPosition = random.nextInt(1, 10);
                     try{
-                        boolean isDone = turn(ticTacToe, 'O', computerPosition);
+                        boolean isDone = turn(ticTacToe, computerSympol, computerPosition);
                         if(isDone){
                             displayGameBoard(ticTacToe);
                             break;
@@ -98,7 +124,7 @@ public class Main {
                     }
                 }
 
-                if(checkWinner(ticTacToe, 'O')){
+                if(checkWinner(ticTacToe, computerSympol)){
                     System.out.println("\nGAME OVER, YOU LOST THIS ROUND.");
                     computerWinsCount++;
                     results[i] = "Computer";
