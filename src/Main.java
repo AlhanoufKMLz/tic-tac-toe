@@ -81,6 +81,7 @@ public class Main {
                     break;
                 }
 
+
                 //---------------COMPUTER TURN-----------------
                 while (true){ //loop for one computer turn
                     System.out.println("\n------COMPUTER'S TURN------");
@@ -112,6 +113,7 @@ public class Main {
 
             }
 
+
             //if someone won two rounds no need for the third round
             if(computerWinsCount == 2 || userWinsCount == 2){
                 break;
@@ -127,6 +129,7 @@ public class Main {
         }
 
     }
+
 
     static void displayGameBoard(char[][] ticTacToe){
         System.out.print("      TIC TAC TOE");
