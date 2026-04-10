@@ -11,22 +11,53 @@ public class Main {
         char[][] ticTacToe = {{'1', '2', '3'}, {'4', '5', '6'}, {'7', '8', '9'}};
         String[] results = new String[3];
 
+        printGreeting();
 
-        System.out.print("Please enter your name: " );
-        String name = input.nextLine();
-
-        printGreeting(name);
-
+        int numberPlayers = 1;
         int rounds = 0;
-        char userSympol = 'X';
-        char computerSympol = 'O';
-        int computerWinsCount = 0;
-        int userWinsCount = 0;
+        char player1Symbol = 'X';
+        char player2Symbol = 'O';
+        String player1Name = "";
+        String player2Name = "Computer";
+        String playerName = "";
+        char playerSymbol = 'X';
+        int player1WinsCount = 0;
+        int player2WinsCount = 0;
 
+        //choose number of players
+        while(true){
+            System.out.println("\nPlease choose one: \n1- ONE player. \n2- 2 players.");
+            try{
+                int userChoice = input.nextInt();
+                if(userChoice == 1){ //one player mode
+                    System.out.print("Please enter your name: " );
+                    input.nextLine();
+                    player1Name = input.nextLine();
+                    numberPlayers = 1;
+                    break;
+                } else if(userChoice == 2){ //two players mode
+                    numberPlayers = 2;
+                    System.out.print("Player who will play with X: " );
+                    input.nextLine();
+                    player1Name = input.nextLine();
+                    System.out.print("Player who will play with O: " );
+                    player2Name = input.nextLine();
+                    break;
+                } else{
+                    throw new Exception("Invalid input, Please enter \"1\" or \"2\".");
+                }
+            }catch (InputMismatchException e){
+                System.out.println("Invalid input.");
+                input.nextLine();
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+        playerName = player1Name;
 
         //loop until the user enters 1 or 2
         while (true){
-            System.out.println("Please choose one: \n1- Play onle ONE round. \n2- Play 3 rounds.");
+            System.out.println("\nPlease choose one: \n1- Play only ONE round. \n2- Play 3 rounds.");
             try{
                 int userChoice = input.nextInt();
                 if(userChoice == 1){
@@ -42,62 +73,70 @@ public class Main {
                 }
             }catch (InputMismatchException e){
                 System.out.println("Invalid input.");
-                input.next();//clean buffer
+                input.nextLine();
             }catch (Exception e){
                 System.out.println(e.getMessage());
             }
         }
 
         //loop until the user enters X or O
-        while (true){
-            System.out.print("Please choose sympol to play with ( X or O ): ");
-            try{
-                String userInput = input.nextLine();
-                if(userInput.trim().equalsIgnoreCase("X")){
-                    break;
-                } else if(userInput.trim().equalsIgnoreCase("O")){
-                    userSympol = '0';
-                    computerSympol = 'X';
-                    break;
-                } else{
-                    throw new Exception("Invalid input, Please enter \"X\" or \"O\".");
+        if(numberPlayers == 1){
+            while (true){
+                System.out.print("\nPlease choose symbol to play with ( X or O ): ");
+                try{
+                    String userInput = input.nextLine();
+                    if(userInput.trim().equalsIgnoreCase("X")){
+                        break;
+                    } else if(userInput.trim().equalsIgnoreCase("O")){
+                        playerSymbol = 'O';
+                        player2Symbol = 'X';
+                        break;
+                    } else{
+                        throw new Exception("Invalid input, Please enter \"X\" or \"O\".");
+                    }
+                }catch (InputMismatchException e){
+                    System.out.println("Invalid input.");
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
                 }
-            }catch (InputMismatchException e){
-                System.out.println("Invalid input.");
-            }catch (Exception e){
-                System.out.println(e.getMessage());
             }
         }
 
-        //Game starts
+
+        //----------------------GAME STARTS--------------------------
         for(int i = 0; i < rounds; i++){ //loop for rounds
+
             System.out.println("\n---------------ROUND #" + (i+1) + "---------------\n");
             displayGameBoard(ticTacToe);
 
             while (true){ //loop for one round
-                //---------------USER TURN-----------------
+                //---------------PLAYER TURN-----------------
                 while (true){ //loop for one user turn
-                    System.out.println("\n------" + name.toUpperCase() + "'s TURN------");
+                    System.out.println("\n------" + playerName.toUpperCase() + "'s TURN------");
                     System.out.print("Please choose position: ");
                     try{
                         int userPosition = input.nextInt();
-                        boolean isDone = turn(ticTacToe, userSympol, userPosition);
+                        boolean isDone = turn(ticTacToe, playerSymbol, userPosition);
                         if(isDone){
                             displayGameBoard(ticTacToe);
                             break;
                         }
                     }catch (InputMismatchException e) {
                         System.out.println("Invalid input.");
-                        input.next();//clean buffer
+                        input.nextLine();
                     }catch (Exception e){
                         System.out.println(e.getMessage());
                     }
                 }
 
-                if(checkWinner(ticTacToe, userSympol)){
-                    System.out.println("\nCONGRATS, YOU WON THIS ROUND.");
-                    userWinsCount++;
-                    results[i] = name;
+                if(checkWinner(ticTacToe, playerSymbol)){
+                    System.out.println("\nCONGRATS, " + playerName.toUpperCase() + " WON THIS ROUND.");
+                    if(playerName.equalsIgnoreCase(player1Name)){
+                        player1WinsCount++;
+                    } else {
+                        player2WinsCount++;
+                    }
+                    results[i] = playerName;
                     break;
                 }
 
@@ -107,41 +146,52 @@ public class Main {
                     break;
                 }
 
-
+                //switch player
+                if(numberPlayers == 2){
+                    if(playerName.equalsIgnoreCase(player1Name)){
+                        playerName = player2Name;
+                        playerSymbol = player2Symbol;
+                    } else {
+                        playerName = player1Name;
+                        playerSymbol = player1Symbol;
+                    }
+                }
                 //---------------COMPUTER TURN-----------------
-                while (true){ //loop for one computer turn
-                    System.out.println("\n------COMPUTER'S TURN------");
-                    int computerPosition = random.nextInt(1, 10);
-                    try{
-                        boolean isDone = turn(ticTacToe, computerSympol, computerPosition);
-                        if(isDone){
-                            displayGameBoard(ticTacToe);
-                            break;
+                else{
+                    while (true){ //loop for one computer turn
+                        System.out.println("\n------COMPUTER'S TURN------");
+                        int computerPosition = random.nextInt(1, 10);
+                        try{
+                            boolean isDone = turn(ticTacToe, player2Symbol, computerPosition);
+                            if(isDone){
+                                displayGameBoard(ticTacToe);
+                                break;
+                            }
+
+                        }catch (Exception e){
+                            System.out.println(e.getMessage());
                         }
-
-                    }catch (Exception e){
-                        System.out.println(e.getMessage());
                     }
-                }
 
-                if(checkWinner(ticTacToe, computerSympol)){
-                    System.out.println("\nGAME OVER, YOU LOST THIS ROUND.");
-                    computerWinsCount++;
-                    results[i] = "Computer";
-                    break;
-                }
+                    if(checkWinner(ticTacToe, player2Symbol)){
+                        System.out.println("\nGAME OVER, YOU LOST THIS ROUND.");
+                        player2WinsCount++;
+                        results[i] = "Computer";
+                        break;
+                    }
 
-                if(checkForTie(ticTacToe)){
-                    System.out.println("DRAW.");
-                    results[i] = "Draw";
-                    break;
+                    if(checkForTie(ticTacToe)){
+                        System.out.println("DRAW.");
+                        results[i] = "Draw";
+                        break;
+                    }
                 }
 
             }
 
 
             //if someone won two rounds no need for the third round
-            if(computerWinsCount == 2 || userWinsCount == 2){
+            if(player2WinsCount == 2 || player1WinsCount == 2){
                 break;
             }
 
@@ -151,7 +201,7 @@ public class Main {
 
         //no need to print the results table if it's only one round
         if(rounds == 3){
-            displayResults(computerWinsCount, userWinsCount, results);
+            displayResults(player1WinsCount, player2WinsCount, results, player1Name ,player2Name);
         }
 
     }
@@ -169,25 +219,25 @@ public class Main {
         }
     }
 
-    static void displayResults(int computerWinsCount, int userWinsCount, String[] results){
+    static void displayResults(int player1WinsCount, int player2WinsCount, String[] results, String player1Name, String player2Name){
         System.out.println("\n===== FINAL RESULTS =====");
-        System.out.println("  ROUND  |  WINNER");
-        System.out.println("--------------------");
+        System.out.println("    ROUND  |  WINNER");
+        System.out.println("  --------------------");
         for(int i = 0; i < 3; i++){
-            System.out.println("    " + (i+1) + "    |  " + (results[i] == null ? "canceled!" : results[i]));
+            System.out.println("      " + (i+1) + "    |  " + (results[i] == null ? "canceled!" : results[i]));
         }
 
-        if(userWinsCount > computerWinsCount){
-            System.out.println("YOU ARE THE CHAMPION!");
-        } else if(computerWinsCount > userWinsCount){
-            System.out.println("Computer wins overall.");
+        if(player1WinsCount > player2WinsCount){
+            System.out.println("\n" + player1Name.toUpperCase() + " IS THE CHAMPION!");
+        } else if(player2WinsCount > player1WinsCount){
+            System.out.println("\n" + player2Name.toUpperCase() + " IS THE CHAMPION!");
         }
     }
 
-    static void printGreeting(String name){
-        System.out.println("         -----------------------");
-        System.out.println("Hi " + name + ", Welcome to TIC TAC TOE game.");
-        System.out.println("         -----------------------");
+    static void printGreeting(){
+        System.out.println("---------------------------------------");
+        System.out.println("     Welcome to TIC TAC TOE game.");
+        System.out.println("---------------------------------------");
     }
 
     static void resetBoard(char[][] ticTacToe){
